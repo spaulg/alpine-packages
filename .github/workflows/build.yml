@@ -1,0 +1,42 @@
+name: Build
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        container:
+          - '3.11'
+
+    container: alpine:${{ matrix.container }}
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update package cache
+        run: |
+          apk update -q --no-progress
+
+      - name: Install toolchain
+        run: |
+          apk add -q --no-progress abuild alpine-sdk su-exec
+
+      - name: Setup build user
+        run: |
+          adduser --disabled-password --ingroup abuild abuild
+          echo "abuild ALL=(ALL) ALL" >> /etc/sudoers
+          chown -R :abuild $GITHUB_WORKSPACE
+          chmod -R g+w $GITHUB_WORKSPACE
+
+      - name: Build
+        run: |
+          su-exec abuild abuild-keygen -qna
+          su-exec abuild abuild -qF checksum
+          su-exec abuild abuild -rF
+          mv /home/abuild/packages/couchdb-alpine-package/x86_64/couchdb-3.0.0-r0.apk $GITHUB_WORKSPACE
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: couchdb-3.0.0-r0-(Alpine-${{ matrix.container }}).apk
+          path: couchdb-3.0.0-r0.apk

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+/etc/init.d/couchdb stop 2>/dev/null
+
+exit 0

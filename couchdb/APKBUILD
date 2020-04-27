@@ -1,0 +1,82 @@
+# Contributor: Simon Paulger <spaulger@codezen.co.uk>
+# Maintainer: Simon Paulger <spaulger@codezen.co.uk>
+pkgname="couchdb"
+pkgver="3.0.0"
+pkgrel=0
+pkgdesc="Apache CouchDB is an open-source document-oriented NoSQL database, implemented in Erlang"
+url="https://couchdb.apache.org/"
+arch="all"
+license="Apache-2.0"
+depends="
+        erlang
+        erlang-asn1
+        erlang-crypto
+        erlang-erts
+        erlang-inets
+        erlang-os-mon
+        erlang-public-key
+        erlang-runtime-tools
+        erlang-sasl
+        erlang-ssl
+        erlang-syntax-tools
+        erlang-xmerl
+        "
+makedepends="
+        alpine-sdk
+        abuild
+        make
+        erlang-dev
+        erlang-eunit
+        erlang-reltool
+        erlang-tools
+        mozjs60-dev
+        "
+checkdepends="
+        curl-dev
+        python3
+        python3-dev
+        elixir
+        "
+pkgusers="couchdb"
+pkggroups="couchdb"
+install="
+        $pkgname.pre-install
+        $pkgname.post-install
+        $pkgname.pre-deinstall
+        "
+source="https://apache.mirrors.nublue.co.uk/couchdb/source/$pkgver/apache-couchdb-$pkgver.tar.gz
+        $pkgname.logrotate
+        $pkgname.initd
+        "
+builddir="$srcdir/"
+options="!fhs"
+
+build() {
+	cd "$builddir"/apache-couchdb-$pkgver
+	./configure --spidermonkey-version=60
+    make release
+}
+
+check() {
+    cd "$builddir"/apache-couchdb-$pkgver
+	make check
+}
+
+package() {
+	cd "$builddir"/apache-couchdb-$pkgver
+
+	mkdir -p "$pkgdir"/opt
+	cp -R rel/couchdb "$pkgdir"/opt/couchdb
+	rm -f "$pkgdir"/opt/couchdb/bin/couchdb.cmd
+
+	chown -R couchdb:couchdb "$pkgdir"/opt/couchdb
+	find "$pkgdir"/opt/couchdb -type d -exec chmod 0770 {} \;
+	chmod 0644 "$pkgdir"/opt/couchdb/etc/*
+
+	ln -s /var/log/couchdb "$pkgdir"/opt/couchdb/var/log/couchdb
+	ln -s /var/lib/couchdb "$pkgdir"/opt/couchdb/data
+
+	install -Dm644 "$srcdir"/$pkgname.logrotate "$pkgdir"/etc/logrotate.d/$pkgname
+	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
+}
+sha512sums="ac5d110a61f55f10559b597b55ce83d02ab043d7b4eed412889cf24ca6cd29e7a2b7ccd5ff2d76da2bb64072e8d8f908e448ffc827e2a05c821d5cbf003b839d  apache-couchdb-3.0.0.tar.gz"

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+install -d -o couchdb -g couchdb -m 770 /var/log/couchdb
+install -d -o couchdb -g couchdb -m 770 /var/lib/couchdb
+
+exit 0

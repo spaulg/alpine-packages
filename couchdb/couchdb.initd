@@ -1,0 +1,22 @@
+#!/sbin/openrc-run
+
+name=${RC_SVCNAME}
+description="CouchDB document-oriented NoSQL database"
+
+command=${command:-/opt/couchdb/bin/couchdb}
+command_args=""
+command_background=true
+command_user="couchdb:couchdb"
+
+pidfile="/run/${RC_SVCNAME}.pid"
+output_log="/var/log/couchdb/couchdb.log"
+error_log="/var/log/couchdb/couchdb.log"
+
+datadir="/var/lib/couchdb"
+logdir="/var/log/couchdb"
+required_dirs="${datadir} ${logdir}"
+
+start_pre() {
+	checkpath --directory --owner couchdb:couchdb --mode 0770 ${datadir}
+	checkpath --directory --owner couchdb:couchdb --mode 0770 ${logdir}
+}

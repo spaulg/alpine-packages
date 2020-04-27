@@ -1,0 +1,6 @@
+#!/bin/sh
+
+addgroup -S couchdb 2>/dev/null
+adduser -S -D -h /opt/couchdb -H -s /bin/bash -G couchdb -g "CouchDB Administrator" couchdb 2>/dev/null
+
+exit 0
