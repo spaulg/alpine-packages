@@ -1,7 +1,7 @@
 # Contributor: Simon Paulger <spaulger@codezen.co.uk>
 # Maintainer: Simon Paulger <spaulger@codezen.co.uk>
 pkgname="couchdb"
-pkgver="3.0.0"
+pkgver="3.0.1"
 pkgrel=0
 pkgdesc="Apache CouchDB is an open-source document-oriented NoSQL database, implemented in Erlang"
 url="https://couchdb.apache.org/"
@@ -44,7 +44,7 @@ install="
         $pkgname.post-install
         $pkgname.pre-deinstall
         "
-source="https://apache.mirrors.nublue.co.uk/couchdb/source/$pkgver/apache-couchdb-$pkgver.tar.gz
+source="https://downloads.apache.org/couchdb/source/$pkgver/apache-couchdb-$pkgver.tar.gz
         $pkgname.logrotate
         $pkgname.initd
         "
@@ -79,4 +79,6 @@ package() {
 	install -Dm644 "$srcdir"/$pkgname.logrotate "$pkgdir"/etc/logrotate.d/$pkgname
 	install -Dm755 "$srcdir"/$pkgname.initd "$pkgdir"/etc/init.d/$pkgname
 }
-sha512sums="ac5d110a61f55f10559b597b55ce83d02ab043d7b4eed412889cf24ca6cd29e7a2b7ccd5ff2d76da2bb64072e8d8f908e448ffc827e2a05c821d5cbf003b839d  apache-couchdb-3.0.0.tar.gz"
+sha512sums="3c3e54b15232caa2dfcfa4be44df03304b9cb84e2d2d795050a2c7b751bb52a17722c280dbc5502728a5ca573ff40a157a9a2a586b4bdb82b65a12e1f4181474  apache-couchdb-3.0.1.tar.gz
+fb37c3eb2eb9572dd482b7c41710afa1410cb8a69286b27eb99b4ad1419a887fc45d77ef22b6dbbc9ccdeaa3f065e867f5dc94ced09cb215ec981183a0caccfd  couchdb.logrotate
+68114eb5b55764ce12e4e7c6feea27da9ec3eb5696aed156b35f902fae8c159a2acb7eb77051916fee3356640d936728c2eadcc300280036dc59e8e7ba427077  couchdb.initd"

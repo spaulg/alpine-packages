@@ -1,8 +1,13 @@
 FROM alpine:3.11
 RUN apk update -q --no-progress
-RUN apk add -q --no-progress abuild alpine-sdk su-exec
+RUN apk add -q --no-progress abuild alpine-sdk su-exec bash
 RUN adduser --disabled-password --ingroup abuild -h /home/abuild abuild
 RUN echo "abuild ALL=(ALL) ALL" >> /etc/sudoers
 RUN install -d -o abuild -g abuild -m 755 /home/abuild/.abuild
 RUN echo 'PACKAGER_PRIVKEY="/home/abuild/.abuild/buildkey.rsa"' > /home/abuild/.abuild/abuild.conf
 RUN chown abuild:abuild /home/abuild/.abuild/abuild.conf
+
+COPY build-changes.sh /build-changes.sh
+RUN chmod 755 /build-changes.sh
+
+ENTRYPOINT /build-changes.sh
